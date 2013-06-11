@@ -1,0 +1,7 @@
+{
+    "beacon-listener": {
+        "requires": [
+            "yui-base"
+        ]
+    }
+}

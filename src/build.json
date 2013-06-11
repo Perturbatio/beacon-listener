@@ -1,0 +1,10 @@
+{
+    "name": "beacon-listener",
+    "builds": {
+        "beacon-listener": {
+            "jsfiles": [
+                "js/beacon-listener.js"
+            ]
+        }
+    }
+}

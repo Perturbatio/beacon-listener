@@ -1,0 +1,11 @@
+{
+    "name"       : "beacon-listener",
+    "displayName": "Gallery: beacon-listener",
+    "description": "*Summary Goes Here*",
+    "author"     : [ "krisheehaw" ],
+    "use"        : [ "beacon-listener" ],
+
+    "tags": [ "gallery" ],
+
+    "examples": []
+}

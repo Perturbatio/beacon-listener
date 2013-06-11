@@ -1,0 +1,25 @@
+<!doctype html>
+<html>
+<head>
+    <title>beacon-listener</title>
+    <script src="/build/yui/yui-min.js"></script>
+    <script src="js/tests.js"></script>
+    <meta charset="utf-8" />
+</head>
+<body class="yui3-skin-sam">
+<div id="logger"></div>
+
+<script>
+YUI({
+    coverage: ['beacon-listener'],
+    filter: (window.location.search.match(/[?&]filter=([^&]+)/) || [])[1] || 'raw'
+}).use('beacon-listener', 'test-console', 'test', 'beacon-listener-tests', function(Y) {
+    
+    (new Y.Test.Console()).render('#logger');
+
+    Y.Test.Runner.setName('beacon-listener');
+    Y.Test.Runner.run();
+});
+</script>
+</body>
+</html>
