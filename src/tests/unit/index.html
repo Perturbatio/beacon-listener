@@ -2,8 +2,8 @@
 <html>
 <head>
     <title>beacon-listener</title>
-    <script src="/build/yui/yui-min.js"></script>
-    <script src="js/tests.js"></script>
+    <script src="http://yui.yahooapis.com/3.10.3/build/yui/yui-min.js"></script>
+    <script src="../../js/beacon-listener.js"></script>
     <meta charset="utf-8" />
 </head>
 <body class="yui3-skin-sam">
@@ -12,8 +12,14 @@
 <script>
 YUI({
     coverage: ['beacon-listener'],
+    modules: {
+	'module-tests': {
+		fullpath: './js/tests.js',
+			requires: ['beacon-listener', 'test']
+		}
+	},
     filter: (window.location.search.match(/[?&]filter=([^&]+)/) || [])[1] || 'raw'
-}).use('beacon-listener', 'test-console', 'test', 'beacon-listener-tests', function(Y) {
+}).use('test-console', 'test', 'module-tests', function(Y) {
     
     (new Y.Test.Console()).render('#logger');
 

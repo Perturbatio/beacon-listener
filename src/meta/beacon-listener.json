@@ -1,7 +1,7 @@
 {
-    "beacon-listener": {
-        "requires": [
-            "yui-base"
-        ]
-    }
+	"beacon-listener": {
+		"requires": [
+			"node","event-custom", "event-resize", "base-build", "dom"
+		]
+	}
 }

@@ -21,6 +21,7 @@
  * check for an element or elements within their defined region
  */
 YUI.add('beacon-listener', function(Y) {
+
 	var Perturbatio = Y.namespace('Perturbatio'),
 		MIN_TIMER_VAL = 1,
 		EVENT_TYPE_FOUND = 'beaconlistener:found',
