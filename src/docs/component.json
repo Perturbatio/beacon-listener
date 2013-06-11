@@ -1,7 +1,7 @@
 {
     "name"       : "beacon-listener",
     "displayName": "Gallery: beacon-listener",
-    "description": "*Summary Goes Here*",
+    "description": "Create one or more listeners to watch for nodes with specified selectors to enter either the viewport or a specified region",
     "author"     : [ "krisheehaw" ],
     "use"        : [ "beacon-listener" ],
 
