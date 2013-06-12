@@ -14,8 +14,10 @@
 //Basic usage:
 
 YUI().use('beacon-listener', 'transition', function(e){
+	var BeaconListener = Y.Perturbatio.BeaconListener,
+		myListener;
 	//listen for all elements with a class of 'beacon'
-	var myListener = new Y.beaconListener({
+	myListener = new BeaconListener({
 		beacons: '.beacon'
 	});
 
@@ -31,9 +33,11 @@ YUI().use('beacon-listener', 'transition', function(e){
 //Advanced usage:
 
 YUI().use('beacon-listener', 'transition', function(e){
+	var BeaconListener = Y.Perturbatio.BeaconListener,
+		myListener;
 	// listen for all elements with a class of 'beacon'
 	// but only if they are fully inside the region defined by #my-region
-	var myListener = new Y.beaconListener({
+	myListener = new BeaconListener({
 		beacons: '.beacon',
 		region: '#my-region',
 		fullyInside: true,

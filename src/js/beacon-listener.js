@@ -1,10 +1,10 @@
 /**
  * TODO: check that the example works (on the fly writing)
- * @example 
+ * @example
  * var picListener = new Y.BeaconListener({beacons:'.pic-beacon'});//listen for all in viewport
  *	picListener.on('found', function(e){
  *	e.beacon.src = e.beacon.getData('img-src');
- *	
+ *
  *	new Y.Anim({
  *		node:e.beacon,
  *		from: {
@@ -15,12 +15,12 @@
  *		}
  *	}).run();
  * });
- * 
+ * @module beacon-listener
+ * @class BeaconListener
  * @author Kris Kelly
- * @description Beacon listeners are simple classes that will periodically 
- * check for an element or elements within their defined region
+ * @description Beacon listeners are simple classes that will periodically check for an element or elements within their defined region
  */
-YUI.add('beacon-listener', function(Y) {
+//YUI.add('beacon-listener', function(Y) {
 
 	var Perturbatio = Y.namespace('Perturbatio'),
 		MIN_TIMER_VAL = 1,
@@ -34,7 +34,7 @@ YUI.add('beacon-listener', function(Y) {
 		LEFT = 'left';
 
 
-	Y.BeaconListener = Y.Base.create('beaconlistener', Y.Base, [], {
+	Perturbatio.BeaconListener = Y.Base.create('beaconlistener', Y.Base, [], {
 		_isListening: false,
 		_timerHandle: null,
 		_pollInterval: 100,
@@ -45,13 +45,16 @@ YUI.add('beacon-listener', function(Y) {
 		_fullyInside: false,
 
 		/**
-		 *
+		 * Constructor for the listener class
+		 * @protected
+		 * @param {object} config
+		 * @return null
 		 *****************/
 		initializer: function(config){
-			var me = this, 
-				beacons = config.beacons, 
+			var me = this,
+				beacons = config.beacons,
 				region = config.region;
-		
+
 			me.publish(EVENT_TYPE_FOUND, {
 				context: me,
 				broadcast: true,
@@ -74,30 +77,32 @@ YUI.add('beacon-listener', function(Y) {
 			if ( region ){
 				me._handleRegionChange();
 			}
-			
+
 			//poll interval
 			me.after('beaconlistener:pollIntervalChange', me._handlePollIntervalChange);
 
 			Y.on('windowresize', function(){ me._handleRegionChange();  });
-			
+
 			me.after('beaconlistener:fullyInsideChange', me._handleFullyInsideChange);
-			
+
 			me._handleFullyInsideChange();//force setting of internal property
-			
-			
+
+
 			//fire off a check now
 			Y.later(
-					me.get('pollInterval'), 
-					me, 
-					me.check, 
+					me.get('pollInterval'),
+					me,
+					me.check,
 					null,
 					false
 				);
 		},
 
 		/**
-		 *
-		 *****************/
+		* Stop listening for beacons
+		* 
+		* @return null
+		*****************/
 		stop: function(){
 			var me = this;
 			if (me._isListening === true && me._timerHandle !== null){
@@ -108,20 +113,20 @@ YUI.add('beacon-listener', function(Y) {
 		},
 
 		/**
-		 *
+		 * Start listening for beacons
 		 *****************/
 		start: function(){
 			var me = this;
-			if ( 
-				Lang.isUndefined( me._timerHandler ) 
-				&& !Lang.isUndefined( me._beaconList ) 
-				&& me._beaconList !== null 
+			if (
+				Lang.isUndefined( me._timerHandler )
+				&& !Lang.isUndefined( me._beaconList )
+				&& me._beaconList !== null
 			){
 				me._isListening = true;
 				me._timerHandle = Y.later(
-					me.get('pollInterval'), 
-					me, 
-					me.check, 
+					me.get('pollInterval'),
+					me,
+					me.check,
 					null,
 					true
 				);
@@ -135,7 +140,7 @@ YUI.add('beacon-listener', function(Y) {
 			var me = this,
 				region = me._region,
 				testMethod;
-			
+
 			if (region === null){
 				testMethod = DOM.inViewportRegion;
 			} else {
@@ -144,7 +149,7 @@ YUI.add('beacon-listener', function(Y) {
 				testMethod = DOM.inRegion;
 			}
 
-			me._beaconList.each(function(node, index, nodeList){
+			me._beaconList.each(function(node, index){
 				var testNode = me._beaconDOMNodes[index], inRegion, args;
 
 				if (region === null){
@@ -152,9 +157,9 @@ YUI.add('beacon-listener', function(Y) {
 				} else {
 					args = [testNode, region, me._fullyInside];
 				}
-				
+
 				inRegion = testMethod.apply(me, args);
-				
+
 				if ( inRegion && !me._beaconStates[index] ){
 					//if we encounter a beacon and it wasn't previously in the region
 					me._beaconStates[index] = true;
@@ -169,39 +174,39 @@ YUI.add('beacon-listener', function(Y) {
 		},
 
 		/**
-		 * 
+		 *
 		 **********************/
 		isListening: function(){
 			return this._isListening;
 		},
-		
+
 		/**
-		 * 
+		 *
 		 **********************/
 		_handleFullyInsideChange: function(){
 			var me = this;
 			//store the fullyInside property internally
 			me._fullyInside = me.get('fullyInside');
 		},
-		
+
 		/**
 		 *
 		 *****************/
-		_handleRegionChange: function(e){
+		_handleRegionChange: function(){
 			var me = this,
 				region = me.get('region');
 			me._recalcRegion(region);
 		},
 
 		/**
-		 *
+		 * @param region
 		 *****************/
 		_recalcRegion: function(region){
 			var me = this, newRegion;
-			
+
 			if ( Lang.isObject( region ) ){
 				if (
-					Lang.isNumber( region[TOP] ) 
+					Lang.isNumber( region[TOP] )
 					&& Lang.isNumber( region[RIGHT] )
 					&& Lang.isNumber( region[BOTTOM] )
 					&& Lang.isNumber( region[LEFT] )
@@ -232,16 +237,16 @@ YUI.add('beacon-listener', function(Y) {
 		/**
 		 *
 		 *****************/
-		_handleBeaconsChange: function(e){
+		_handleBeaconsChange: function(){
 			var me = this,
 				beacons = me.get('beacons');
-			
+
 			me._beaconStates = [];
 			me._beaconDOMNodes = [];
 			me._beaconList = me._getList(beacons);
-			
+
 			if ( me._beaconList && me._beaconList.size() > 0 ){
-				me._beaconList.each(function(node, index, nodeList){
+				me._beaconList.each(function(node, index){
 					me._beaconStates[index] = false;
 					me._beaconDOMNodes[index] = node.getDOMNode();
 				});
@@ -253,8 +258,7 @@ YUI.add('beacon-listener', function(Y) {
 		 * @return NodeList|null
 		 *****************/
 		_getList: function(val){
-			var me = this,
-				temp;
+			var temp;
 
 			if ( Lang.isString( val ) ){ //assume it's a selector
 				return Y.all(val);
@@ -274,7 +278,7 @@ YUI.add('beacon-listener', function(Y) {
 		/**
 		 *
 		 *****************/
-		_handlePollIntervalChange: function(e){
+		_handlePollIntervalChange: function(){
 			var me = this;
 			me._pollInterval = me.get('pollInterval');
 		}
@@ -282,28 +286,28 @@ YUI.add('beacon-listener', function(Y) {
 		ATTRS: {
 			"pollInterval": {
 				value:100,
-				validator: function( val, name ){
+				validator: function( val ){
 					return ( Lang.isNumber(val) && val > MIN_TIMER_VAL );
 				}
 			},
 			"region": { //can be a node or region object
 				value: null, //if region is null then the viewport will be used
-				validator: function(val, name){
+				validator: function(val){
 					return ( val === null || Y.one( val ) );
 				}
 			},
 			"beacons": {
 				value: '.beacon',
-				validator: function(val, name){
+				validator: function(val){
 					return (!Lang.isUndefined(val) && val !== null);
 				}
 			},
 			"fullyInside": {
 				value:false,
-				validator: function( val, name ){
+				validator: function( val ){
 					return Lang.isBoolean(val);
 				}
 			}
 		}
 	});
-}, '1.0', {requires:['node',"event-custom", "event-resize", 'base-build', 'dom']});
+//}, '1.0', {requires:['node',"event-custom", "event-resize", 'base-build', 'dom']});

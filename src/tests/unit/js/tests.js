@@ -1,7 +1,7 @@
 YUI.add('module-tests', function(Y) {
 
 	var suite = new Y.Test.Suite('beacon-listener'),
-		BeaconListener = Y.BeaconListener;
+		BeaconListener = Y.Perturbatio.BeaconListener;
 
 	suite.add(new Y.Test.Case({
 		name: 'Automated Tests',
