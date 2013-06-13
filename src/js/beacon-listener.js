@@ -22,7 +22,7 @@
  */
 
 
-	var Perturbatio = Y.namespace('Perturbatio'),
+	var 
 		MIN_TIMER_VAL = 1,
 		EVENT_TYPE_FOUND = 'beaconlistener:found',
 		EVENT_TYPE_LOST = 'beaconlistener:lost',
@@ -34,7 +34,7 @@
 		LEFT = 'left';
 
 
-	Perturbatio.BeaconListener = Y.Base.create('beaconlistener', Y.Base, [], {
+	BeaconListener = Y.Base.create('beaconlistener', Y.Base, [], {
 		_isListening: false,
 		_timerHandle: null,
 		_pollInterval: 100,
