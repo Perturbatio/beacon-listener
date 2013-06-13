@@ -20,7 +20,7 @@
  * @author Kris Kelly
  * @description Beacon listeners are simple classes that will periodically check for an element or elements within their defined region
  */
-//YUI.add('beacon-listener', function(Y) {
+
 
 	var Perturbatio = Y.namespace('Perturbatio'),
 		MIN_TIMER_VAL = 1,
@@ -49,6 +49,7 @@
 		 * @protected
 		 * @param {object} config
 		 * @return null
+		 * @method initializer
 		 *****************/
 		initializer: function(config){
 			var me = this,
@@ -100,8 +101,8 @@
 
 		/**
 		* Stop listening for beacons
-		* 
-		* @return null
+		*
+		* @method stop
 		*****************/
 		stop: function(){
 			var me = this;
@@ -114,6 +115,8 @@
 
 		/**
 		 * Start listening for beacons
+		 *
+		 * @method start
 		 *****************/
 		start: function(){
 			var me = this;
@@ -134,7 +137,9 @@
 		},
 
 		/**
+		 * Check for beacons in the region
 		 *
+		 * @method check
 		 *****************/
 		check: function(){
 			var me = this,
@@ -174,14 +179,17 @@
 		},
 
 		/**
+		 * Check if the listener is listening
 		 *
+		 * @method isListening
 		 **********************/
 		isListening: function(){
 			return this._isListening;
 		},
 
 		/**
-		 *
+		 * @private
+		 * @method _handleFullyInsideChange
 		 **********************/
 		_handleFullyInsideChange: function(){
 			var me = this;
@@ -190,18 +198,22 @@
 		},
 
 		/**
-		 *
+		 * @private
+		 * @method _handleRegionChange
 		 *****************/
 		_handleRegionChange: function(){
 			var me = this,
 				region = me.get('region');
-			me._recalcRegion(region);
+			me.recalcRegion(region);
 		},
 
 		/**
+		 * Recalculate the region
+		 *
 		 * @param region
+		 * @method recalcRegion
 		 *****************/
-		_recalcRegion: function(region){
+		recalcRegion: function(region){
 			var me = this, newRegion;
 
 			if ( Lang.isObject( region ) ){
@@ -235,7 +247,8 @@
 		},
 
 		/**
-		 *
+		 * @private
+		 * @method _handleBeaconsChange
 		 *****************/
 		_handleBeaconsChange: function(){
 			var me = this,
@@ -255,7 +268,9 @@
 		},
 
 		/**
+		 * @private
 		 * @return NodeList|null
+		 * @method _getList
 		 *****************/
 		_getList: function(val){
 			var temp;
@@ -276,7 +291,8 @@
 		},
 
 		/**
-		 *
+		 * @private
+		 * @method _handlePollIntervalChange
 		 *****************/
 		_handlePollIntervalChange: function(){
 			var me = this;
@@ -310,4 +326,4 @@
 			}
 		}
 	});
-//}, '1.0', {requires:['node',"event-custom", "event-resize", 'base-build', 'dom']});
+

@@ -1,6 +1,7 @@
 <div class="intro">
     <p>
-    Create one or more listeners to watch for nodes with specified selectors to enter either the viewport or a specified region
+    Create one or more listeners to watch for nodes with specified
+     selectors to enter either the viewport or a specified region
     </p>
 </div>
 
@@ -8,7 +9,13 @@
 
 <h2>Description</h2>
 
-<p>*Module Description Goes Here*</p>
+<p>
+A BeaconListener polls periodically and checks if each element's region intersects a
+ predefined region.
+</p>
+<p>
+The region will default to the window viewport, but can be set to any element in the document.
+</p>
 
 ```
 //Basic usage:
