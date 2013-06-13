@@ -1,20 +1,23 @@
 /**
  * TODO: check that the example works (on the fly writing)
  * @example
- * var picListener = new Y.BeaconListener({beacons:'.pic-beacon'});//listen for all in viewport
- *	picListener.on('found', function(e){
- *	e.beacon.src = e.beacon.getData('img-src');
+ *	var picListener = new Y.BeaconListener({
+ *		beacons:'.pic-beacon' //listen for all pic-beacons in the viewport
+ *	});
  *
- *	new Y.Anim({
- *		node:e.beacon,
- *		from: {
- *			opacity: 0
- *		},
- *		to: {
- *			opacity: 1
- *		}
- *	}).run();
- * });
+ *	picListener.on('found', function(e){
+ *		e.beacon.src = e.beacon.getData('img-src');
+ *
+ *		new Y.Anim({
+ *			node:e.beacon,
+ *			from: {
+ *				opacity: 0
+ *			},
+ *			to: {
+ *				opacity: 1
+ *			}
+ *		}).run();
+ *	});
  * @module beacon-listener
  * @class BeaconListener
  * @author Kris Kelly
@@ -22,7 +25,7 @@
  */
 
 
-	var 
+	var
 		MIN_TIMER_VAL = 1,
 		EVENT_TYPE_FOUND = 'beaconlistener:found',
 		EVENT_TYPE_LOST = 'beaconlistener:lost',
@@ -34,7 +37,7 @@
 		LEFT = 'left';
 
 
-	BeaconListener = Y.Base.create('beaconlistener', Y.Base, [], {
+	Y.BeaconListener = Y.Base.create('beaconlistener', Y.Base, [], {
 		_isListening: false,
 		_timerHandle: null,
 		_pollInterval: 100,
@@ -188,7 +191,7 @@
 		},
 
 		/**
-		 * @private
+		 * @protected
 		 * @method _handleFullyInsideChange
 		 **********************/
 		_handleFullyInsideChange: function(){
@@ -198,7 +201,7 @@
 		},
 
 		/**
-		 * @private
+		 * @protected
 		 * @method _handleRegionChange
 		 *****************/
 		_handleRegionChange: function(){
@@ -247,7 +250,7 @@
 		},
 
 		/**
-		 * @private
+		 * @protected
 		 * @method _handleBeaconsChange
 		 *****************/
 		_handleBeaconsChange: function(){
@@ -268,7 +271,7 @@
 		},
 
 		/**
-		 * @private
+		 * @protected
 		 * @return NodeList|null
 		 * @method _getList
 		 *****************/
@@ -291,7 +294,7 @@
 		},
 
 		/**
-		 * @private
+		 * @protected
 		 * @method _handlePollIntervalChange
 		 *****************/
 		_handlePollIntervalChange: function(){

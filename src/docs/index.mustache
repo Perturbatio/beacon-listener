@@ -16,10 +16,8 @@ A BeaconListener polls periodically and checks if each element's region intersec
 <p>
 The region will default to the window viewport, but can be set to any element in the document.
 </p>
-
+<h3>Basic Usage</h3>
 ```
-//Basic usage:
-
 YUI().use('beacon-listener', 'transition', function(e){
 	var BeaconListener = Y.Perturbatio.BeaconListener,
 		myListener;
@@ -36,9 +34,9 @@ YUI().use('beacon-listener', 'transition', function(e){
 		e.beacon.hide(true);
 	});
 });
-
-//Advanced usage:
-
+```
+<h3>Advanced Usage</h3>
+```
 YUI().use('beacon-listener', 'transition', function(e){
 	var BeaconListener = Y.Perturbatio.BeaconListener,
 		myListener;
@@ -58,8 +56,11 @@ YUI().use('beacon-listener', 'transition', function(e){
 	Y.on('beaconlistener:lost', function(e){
 		e.beacon.hide(true);
 	});
+
+	//listen to events for this listener only
+	myListener.on('found', function(e){
+		Y.log('found a beacon: ', e.beacon.get('id'));
+	});
 });
-
-
 ```
 
