@@ -52,7 +52,7 @@
 
 		/**
 		 * Constructor for the listener class
-		 * @protected
+		 * @private
 		 * @param {object} config
 		 * @return null
 		 * @method initializer
@@ -200,7 +200,7 @@
 		},
 
 		/**
-		 * @protected
+		 * @private
 		 * @method _handleFullyInsideChange
 		 **********************/
 		_handleFullyInsideChange: function(){
@@ -210,7 +210,7 @@
 		},
 
 		/**
-		 * @protected
+		 * @private
 		 * @method _handleRegionChange
 		 *****************/
 		_handleRegionChange: function(){
@@ -265,7 +265,7 @@
 		},
 
 		/**
-		 * @protected
+		 * @private
 		 * @method _handleBeaconsChange
 		 *****************/
 		_handleBeaconsChange: function(){
@@ -286,7 +286,7 @@
 		},
 
 		/**
-		 * @protected
+		 * @private
 		 * @return NodeList|null
 		 * @method _getList
 		 *****************/
@@ -309,7 +309,7 @@
 		},
 
 		/**
-		 * @protected
+		 * @private
 		 * @method _handlePollIntervalChange
 		 *****************/
 		_handlePollIntervalChange: function(){
