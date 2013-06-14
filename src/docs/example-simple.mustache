@@ -1,0 +1,22 @@
+
+<div id="description">
+	<p>{{description}}</p>
+</div>
+
+<style>
+	{{>example-simple-source-css}}
+</style>
+<div id="demo" class="example">
+	{{>example-simple-source-html}}
+	<script>
+		YUI({
+			modules:{
+				'beacon-listener': {
+					fullpath: '/build/beacon-listener/beacon-listener.js'
+				}
+			}
+		}).use('{{use}}', function(Y){
+			{{>example-simple-start-js}}
+		});
+	</script>
+</div>

@@ -1,0 +1,14 @@
+var myListener = new Y.BeaconListener({
+	beacons: '.beacon'
+});
+
+myListener.on('found', function(e){
+	console.log(e);
+	e.beacon.show(true);
+});
+
+myListener.on('lost', function(e){
+	e.beacon.hide(true);
+});
+
+myListener.start();

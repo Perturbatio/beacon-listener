@@ -1,5 +1,5 @@
+"use strict";
 /**
- * TODO: check that the example works (on the fly writing)
  * @example
  *	var picListener = new Y.BeaconListener({
  *		beacons:'.pic-beacon' //listen for all pic-beacons in the viewport
@@ -18,6 +18,9 @@
  *			}
  *		}).run();
  *	});
+ *
+ *	picListener.start();
+ *
  * @module beacon-listener
  * @class BeaconListener
  * @author Kris Kelly
@@ -37,7 +40,7 @@
 		LEFT = 'left';
 
 
-	Y.BeaconListener = Y.Base.create('beaconlistener', Y.Base, [], {
+	Y.BeaconListener = Y.Base.create('beaconListener', Y.Base, [], {
 		_isListening: false,
 		_timerHandle: null,
 		_pollInterval: 100,
@@ -55,6 +58,10 @@
 		 * @method initializer
 		 *****************/
 		initializer: function(config){
+			config = config || {
+				beacons: '.beacon',
+				region: null
+			};
 			var me = this,
 				beacons = config.beacons,
 				region = config.region;
@@ -91,15 +98,17 @@
 
 			me._handleFullyInsideChange();//force setting of internal property
 
-
-			//fire off a check now
-			Y.later(
+			if (me.get('autoStart')){
+				me.start();
+				//fire off a check now
+				Y.later(
 					me.get('pollInterval'),
 					me,
 					me.check,
 					null,
 					false
 				);
+			}
 		},
 
 		/**
@@ -212,12 +221,18 @@
 
 		/**
 		 * Recalculate the region
+		 * The the region is a valid object then the current region will be overwritten
 		 *
-		 * @param region
+		 * @param region (optional)
 		 * @method recalcRegion
 		 *****************/
 		recalcRegion: function(region){
-			var me = this, newRegion;
+			var me = this,
+				newRegion;
+
+			if ( Y.Lang.isUndefined( region ) ){
+				region = me._region;
+			}
 
 			if ( Lang.isObject( region ) ){
 				if (
@@ -303,25 +318,61 @@
 		}
 	}, {
 		ATTRS: {
+			/**
+			* Number of milliseconds between checks
+			*
+			* @attribute pollInterval
+			* @type Integer
+			*/
 			"pollInterval": {
 				value:100,
 				validator: function( val ){
 					return ( Lang.isNumber(val) && val > MIN_TIMER_VAL );
 				}
 			},
+			/**
+			* Defines the region within which the listener will check for beacons.
+			*
+			* @attribute region
+			* @type Node|Object|null
+			*/
 			"region": { //can be a node or region object
 				value: null, //if region is null then the viewport will be used
 				validator: function(val){
 					return ( val === null || Y.one( val ) );
 				}
 			},
+			/**
+			* A selector, Node or NodeList that will be used to determine the beacons this listener observes
+			*
+			* @attribute beacons
+			* @type String|Node|NodeList
+			*/
 			"beacons": {
 				value: '.beacon',
 				validator: function(val){
 					return (!Lang.isUndefined(val) && val !== null);
 				}
 			},
+			/**
+			* If true, then the beacon must be fully contained within the region
+			*
+			* @attribute fullyInside
+			* @type Boolean
+			*/
 			"fullyInside": {
+				value:false,
+				validator: function( val ){
+					return Lang.isBoolean(val);
+				}
+			},
+			/**
+			* If true, the start method will be called as soon as the class is initialised
+			*
+			* @attribute autoStart
+			* @type Boolean
+			*/
+			"autoStart": {
 				value:false,
 				validator: function( val ){
 					return Lang.isBoolean(val);

@@ -1,7 +1,6 @@
 <div class="intro">
     <p>
-    Create one or more listeners to watch for nodes with specified
-     selectors to enter either the viewport or a specified region
+	Beacon listeners poll for one or more beacons (Nodes) entering or exiting their defined region
     </p>
 </div>
 
@@ -11,20 +10,78 @@
 
 <p>
 A BeaconListener polls periodically and checks if each element's region intersects a
- predefined region.
+ predefined region. The region will default to the window viewport, but can be set to any element in the document.
 </p>
 <p>
-The region will default to the window viewport, but can be set to any element in the document.
+	The beacons config item can be any selector compatible with Y.all, for 
+	performance reasons these beacons are cached internally rather than recalculated at runtime.
+	If you wish to rebuild the beacons, you can reset the listener's beacons attribute which will fire
+	a "beaconlister:beaconsChange" event.  The listener will then recache the beacons.
 </p>
+
+<h2 id="config">Configuration</h2>
+<table>
+	<tbody>
+		<tr>
+			<td>pollInterval</td>
+			<td>Integer</td>
+			<td>100</td>
+			<td>Number of milliseconds between checks</td>
+		</tr>
+		<tr>
+			<td>region</td>
+			<td>Node|Object</td>
+			<td>null</td>
+			<td>
+				<p>Defines the region within which the listener will check for beacons.</p>
+				<p>This can be null, a Node or a Region object</p>
+				<p>
+					If null (default) then the viewport will be used.
+				</p>
+			</td>
+		</tr>
+		<tr>
+			<td>beacons</td>
+			<td>String|Node|NodeList</td>
+			<td>&quot;.beacon&quot;</td>
+			<td>
+				<p>If a string is passed, it must be a selector that is valid for use with Y.all, 
+				each item in the resulting NodeList will be a beacon that this listener will respond to. </p>
+				<p>If a Node is passed, it will be wrapped in a NodeList</p>
+				<p>If a NodeList is passed, it will be assigned to the internal cache</p>
+			</td>
+		</tr>
+		<tr>
+			<td>fullyInside</td>
+			<td>Boolean</td>
+			<td>false</td>
+			<td>If true, then the beacon must be fully contained within the region</td>
+		</tr>
+		<tr>
+			<td>autoStart</td>
+			<td>Boolean</td>
+			<td>false</td>
+			<td>If true, the start method will be called as soon as the class is initialised</td>
+		</tr>
+	</tbody>
+	<thead>
+		<tr>
+			<th>Attribute</th>
+			<th>Type</th>
+			<th>Default</th>
+			<th>Description</th>
+		<tr>
+	</thead>
+</table>
+
+
 <h3>Basic Usage</h3>
 ```
 YUI().use('beacon-listener', 'transition', function(e){
-	var BeaconListener = Y.Perturbatio.BeaconListener,
+	var BeaconListener = Y.BeaconListener,
 		myListener;
 	//listen for all elements with a class of 'beacon'
-	myListener = new BeaconListener({
-		beacons: '.beacon'
-	});
+	myListener = new BeaconListener();//by default, BeaconListeners will listen to elements with the .beacon class
 
 	Y.on('beaconlistener:found', function(e){
 		e.beacon.show(true);
@@ -33,17 +90,18 @@ YUI().use('beacon-listener', 'transition', function(e){
 	Y.on('beaconlistener:lost', function(e){
 		e.beacon.hide(true);
 	});
+	myListener.start();
 });
 ```
 <h3>Advanced Usage</h3>
 ```
 YUI().use('beacon-listener', 'transition', function(e){
-	var BeaconListener = Y.Perturbatio.BeaconListener,
+	var BeaconListener = Y.BeaconListener,
 		myListener;
-	// listen for all elements with a class of 'beacon'
+	// listen for all elements with a class of 'beacon' or 'pic-beacon'
 	// but only if they are fully inside the region defined by #my-region
 	myListener = new BeaconListener({
-		beacons: '.beacon',
+		beacons: '.beacon,.pic-beacon',
 		region: '#my-region',
 		fullyInside: true,
 		pollInterval: 200
@@ -59,8 +117,12 @@ YUI().use('beacon-listener', 'transition', function(e){
 
 	//listen to events for this listener only
 	myListener.on('found', function(e){
-		Y.log('found a beacon: ', e.beacon.get('id'));
+		if ( e.beacon.get('id') === 'final' ){
+			myListener.stop();
+		}
 	});
+	
+	myListener.start();
 });
 ```
 
