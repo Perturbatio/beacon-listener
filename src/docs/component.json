@@ -18,7 +18,7 @@
 		{
 			"name": "example-pic-beacons",
 			"displayName": "Advanced: Pictures",
-			"description": "Warning! This example contains kittens",
+			"description": "Warning! This example contains images of Bill Murray",
 			"modules": ["beacon-listener"],
 			"tags": ["gallery"]
 		}
