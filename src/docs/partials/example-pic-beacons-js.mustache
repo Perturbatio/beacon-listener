@@ -1,17 +1,17 @@
 
-var picListener;
+var picListener, scale = 0.5;
 
 Y.all('.pic-beacon').each(function(node){
 	var width = parseInt( node.getAttribute('data-width'))
 		,height = parseInt( node.getAttribute('data-height'));
-	node.setStyle('width', width/2);
-	node.setStyle('height', height/2);
-	node.setAttribute('data-src', 'http://placekitten.com/g/' + width + '/' + height);
+	node.setStyle('width', width * scale);
+	node.setStyle('height', height * scale);
+	node.setAttribute('data-src', 'http://fillmurray.com/' + width + '/' + height);
 });
 
 var picListener = new Y.BeaconListener({
 	beacons: '.pic-beacon',
-	fullyInside: true,
+	fullyInside: false,
 	pollInterval: 250,
 	autoStart:true
 });
@@ -19,29 +19,54 @@ var picListener = new Y.BeaconListener({
 picListener.on('beaconlistener:found', function(e){
 	var toWidth = parseInt( e.beacon.getAttribute('data-width'))
 		,toHeight = parseInt( e.beacon.getAttribute('data-height'));
-	
+
 	if (Y.Lang.isUndefined(e.beacon._beacon_processed)){
 		e.beacon.setStyle('backgroundImage', 'url("' + e.beacon.getAttribute('data-src') + '")' );
 		e.beacon._beacon_processed = true;
 	}
-
-	e.beacon.transition({
-		width: toWidth + "px",
-		height: toHeight + "px",
-		duration: 1
-	});
+	switch(e.beacon.get('id')){
+		case 'animate-me':
+			e.beacon.transition({
+				left: "200px",
+				width: toWidth + "px",
+				height: toHeight + "px",
+				duration: 1
+			});
+		break;
+		default:
+			e.beacon.transition({
+				width: toWidth + "px",
+				height: toHeight + "px",
+				duration: 1
+			});
+		break;
+	}
 });
 
 picListener.on('beaconlistener:lost', function(e){
-	
+
 	if (!Y.Lang.isUndefined(e.beacon._beacon_processed)){
-		var toWidth = parseInt( e.beacon.getAttribute('data-width'))/2
-			,toHeight = parseInt( e.beacon.getAttribute('data-height'))/2;
+		var toWidth = parseInt( e.beacon.getAttribute('data-width')) * scale
+			,toHeight = parseInt( e.beacon.getAttribute('data-height')) * scale;
 			
-		e.beacon.transition({
-			width: toWidth + "px",
-			height: toHeight + "px",
-			duration: 1
-		});
+		switch(e.beacon.get('id')){
+			case 'animate-me':
+				e.beacon.transition({
+					left: "0px",
+					width: toWidth + "px",
+					height: toHeight + "px",
+					duration: 1
+				});
+				
+			break;
+			default:
+				e.beacon.transition({
+					width: toWidth + "px",
+					height: toHeight + "px",
+					duration: 1
+				});
+			break;
+		}
+
 	}
 });
