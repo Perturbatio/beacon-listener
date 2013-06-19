@@ -1,6 +1,6 @@
 YUI.add('module-tests', function(Y) {
 
-	var suite = new Y.Test.Suite('beacon-listener'),
+	var suite = new Y.Test.Suite('gallery-beacon-listener'),
 		BeaconListener = Y.BeaconListener;
 		
 	suite.add(new Y.Test.Case({
@@ -31,4 +31,4 @@ YUI.add('module-tests', function(Y) {
 	Y.Test.Runner.add(suite);
 
 
-},'@VERSION@', { requires: [ 'test', 'beacon-listener' ] });
+},'@VERSION@', { requires: [ 'test', 'gallery-beacon-listener' ] });

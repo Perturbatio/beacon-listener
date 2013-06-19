@@ -1,2 +1,2 @@
-beacon-listener
+gallery-beacon-listener
 ========
