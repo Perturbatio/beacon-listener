@@ -1,11 +1,11 @@
-beacon-listener
-===============
+gallery-beacon-listener
+=======================
 
 YUI3 Beacon Listener - Create one or more listeners to watch for nodes with specified selectors to enter either the viewport or a specified region
 
 //Basic usage:
 
-	YUI().use('beacon-listener', 'transition', function(e){
+	YUI().use('gallery-beacon-listener', 'transition', function(e){
 		var BeaconListener = Y.Perturbatio.BeaconListener,
 			myListener;
 		//listen for all elements with a class of 'beacon'
@@ -24,7 +24,7 @@ YUI3 Beacon Listener - Create one or more listeners to watch for nodes with spec
 
 //Advanced usage:
 
-	YUI().use('beacon-listener', 'transition', function(e){
+	YUI().use('gallery-beacon-listener', 'transition', function(e){
 		var BeaconListener = Y.Perturbatio.BeaconListener,
 			myListener;
 		// listen for all elements with a class of 'beacon'
