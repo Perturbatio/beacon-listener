@@ -1,7 +1,7 @@
 <!doctype html>
 <html>
 <head>
-    <title>beacon-listener</title>
+    <title>gallery-beacon-listener</title>
     <script src="/build/yui/yui-min.js"></script>
     <meta charset="utf-8" />
 </head>
@@ -10,14 +10,14 @@
 
 <script>
 YUI({
-    coverage: ['beacon-listener'],
+    coverage: ['gallery-beacon-listener'],
     modules: {
 		'module-tests': {
 			fullpath: './js/tests.js',
-			requires: ['beacon-listener', 'test']
+			requires: ['gallery-beacon-listener', 'test']
 		},
-		'beacon-listener' : {
-			fullpath: '/build/beacon-listener/beacon-listener-min.js',
+		'gallery-beacon-listener' : {
+			fullpath: '/build/gallery-beacon-listener/gallery-beacon-listener-min.js',
 			requires: ['node',"event-custom", "event-resize", 'base-build', 'dom']
 		}
 	},
@@ -26,7 +26,7 @@ YUI({
     
     (new Y.Test.Console()).render('#logger');
 
-    Y.Test.Runner.setName('beacon-listener');
+    Y.Test.Runner.setName('gallery-beacon-listener');
     Y.Test.Runner.run();
 });
 </script>

@@ -1,7 +1,7 @@
 {
-    "name": "beacon-listener",
+    "name": "gallery-beacon-listener",
     "builds": {
-        "beacon-listener": {
+        "gallery-beacon-listener": {
             "jsfiles": [
                 "js/beacon-listener.js"
             ]
