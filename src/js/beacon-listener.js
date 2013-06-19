@@ -21,7 +21,7 @@
  *
  *	picListener.start();
  *
- * @module beacon-listener
+ * @module gallery-beacon-listener
  * @class BeaconListener
  * @author Kris Kelly
  * @description Beacon listeners are simple classes that will periodically check for an element or elements within their defined region
