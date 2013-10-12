@@ -7,7 +7,7 @@ Basic usage:
 
 	YUI().use('gallery-beacon-listener', 'transition', function(e){
 		//listen for all elements with a class of 'beacon'
-		var myListener = new Y.beaconListener({
+		var myListener = new Y.BeaconListener({
 			beacons: '.beacon'
 		});
 	
@@ -25,7 +25,7 @@ Advanced usage:
 	YUI().use('gallery-beacon-listener', 'transition', function(e){
 		// listen for all elements with a class of 'beacon'
 		// but only if they are fully inside the region defined by #my-region
-		var myListener = new Y.beaconListener({
+		var myListener = new Y.BeaconListener({
 			beacons: '.beacon',
 			region: '#my-region',
 			fullyInside: true,
