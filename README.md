@@ -5,7 +5,7 @@ YUI3 Beacon Listener - Create one or more listeners to watch for nodes with spec
 
 Basic usage:
 
-	YUI().use('beacon-listener', 'transition', function(e){
+	YUI().use('gallery-beacon-listener', 'transition', function(e){
 		//listen for all elements with a class of 'beacon'
 		var myListener = new Y.beaconListener({
 			beacons: '.beacon'
@@ -22,7 +22,7 @@ Basic usage:
 
 Advanced usage:
 
-	YUI().use('beacon-listener', 'transition', function(e){
+	YUI().use('gallery-beacon-listener', 'transition', function(e){
 		// listen for all elements with a class of 'beacon'
 		// but only if they are fully inside the region defined by #my-region
 		var myListener = new Y.beaconListener({
