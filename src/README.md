@@ -20,6 +20,8 @@ YUI3 Beacon Listener - Create one or more listeners to watch for nodes with spec
 		Y.on('beaconlistener:lost', function(e){
 			e.beacon.hide(true);
 		});
+		
+		myListener.start();//start listening
 	});
 
 //Advanced usage:
@@ -43,4 +45,5 @@ YUI3 Beacon Listener - Create one or more listeners to watch for nodes with spec
 		Y.on('beaconlistener:lost', function(e){
 			e.beacon.hide(true);
 		});
+		myListener.start();//start listening
 	});
