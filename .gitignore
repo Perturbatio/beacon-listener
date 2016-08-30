@@ -4,3 +4,5 @@ nbproject/*
 .settings
 .svn
 .svn/*
+.idea
+node_modules
