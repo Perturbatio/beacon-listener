@@ -115,7 +115,7 @@ class BeaconListener {
 	 *
 	 * @param value
 	 */
-	private static isUndefined(value){
+	static isUndefined(value){
 
 	}
 
