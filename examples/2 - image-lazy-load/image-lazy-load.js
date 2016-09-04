@@ -8,7 +8,7 @@
 		pollInterval: 1000 / 60,
 		autoStart: true
 	});
-//imageListener.start();
+
 	imageListener.addEventListener('beacon-listener:found', function(e){
 		var img  = e.detail.beacon,
 			newSrc = img.getAttribute('data-src');
