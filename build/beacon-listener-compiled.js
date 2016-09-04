@@ -35,14 +35,15 @@ var BeaconListener = function () {
 		config = config || {
 			beacons: '.beacon',
 			region: null,
-			autoStart: false
+			autoStart: false,
+			pollInterval: 100
 		};
 		me._config = config;
 		me._MIN_TIMER_VAL = 1;
 
 		me._isListening = false;
 		me._timerHandle = null;
-		me._pollInterval = config['pollInterval'] = 100;
+		me._pollInterval = config.pollInterval;
 		me._region = null; //a cache of the region for this listener
 		me._beaconList = null;
 		me._beaconStates = [];
@@ -53,46 +54,22 @@ var BeaconListener = function () {
 		beacons = config.beacons;
 		region = config.region;
 
-		//
-		// me.publish(this._EVENT_TYPE_FOUND, {
-		// 	context: me,
-		// 	broadcast: true,
-		// 	emitFacade: true
-		// });
-		//
-		// me.publish(this._EVENT_TYPE_LOST, {
-		// 	context: me,
-		// 	broadcast: true,
-		// 	emitFacade: true
-		// });
-		//
 		//LISTEN TO
-		//me.after('beaconlistener:beaconsChange', me._handleBeaconsChange);
-
 		if (beacons) {
 			me._handleBeaconsChange();
 		}
 
 		//REGION
-		//me.after('beaconlistener:regionChange', me._handleRegionChange);
-
 		if (region) {
 			me._handleRegionChange();
 		}
-
-		//
-		// //poll interval
-		// me.after('beaconlistener:pollIntervalChange', me._handlePollIntervalChange);
-		//
-		// Y.on('windowresize', function(){ me._handleRegionChange();  });
-		//
-		// me.after('beaconlistener:fullyInsideChange', me._handleFullyInsideChange);
 
 		me._handleFullyInsideChange(); //force setting of internal property
 
 		if (me.getConfig('autoStart')) {
 			me.start();
 			//fire off a check now
+
 			staticClass.later(me.getConfig('pollInterval'), me, me.check, null, false);
 		}
 
@@ -102,7 +79,6 @@ var BeaconListener = function () {
 		window.addEventListener('resize', function () {
 			return me._handleRegionChange;
 		});
-		me.check();
 	}
 
 	/**
