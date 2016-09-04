@@ -13,11 +13,11 @@ Basic usage:
 	});
 	
 	myListener.addEventListener('beacon-listener:found', function(e){
-		e.beacon.show(true);
+		e.detail.beacon.show(true);
 	});
 	
 	myListener.addEventListener('beacon-listener:lost', function(e){
-		e.beacon.hide(true);
+		e.detail.beacon.hide(true);
 	});
 	
 })();
@@ -38,11 +38,11 @@ Advanced usage:
 		});
 	
 		myListener.addEventListener('beacon-listener:found', function(e){
-			e.beacon.show(true);
+			e.detail.beacon.show(true);
 		});
 	
 		myListener.addEventListener('beacon-listener:lost', function(e){
-			e.beacon.hide(true);
+			e.detail.beacon.hide(true);
 		});
 })();
 ````
