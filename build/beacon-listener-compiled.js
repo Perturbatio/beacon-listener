@@ -48,7 +48,7 @@ var BeaconListener = function () {
 		me._beaconStates = [];
 		me._beaconDOMNodes = [];
 		me._fullyInside = false;
-		me._events = [];
+		me.listeners = [];
 
 		beacons = config.beacons;
 		region = config.region;
@@ -102,6 +102,7 @@ var BeaconListener = function () {
 		window.addEventListener('resize', function () {
 			return me._handleRegionChange;
 		});
+		me.check();
 	}
 
 	/**
@@ -135,7 +136,7 @@ var BeaconListener = function () {
 			    staticClass = BeaconListener;
 			if (staticClass.isUndefined(me._timerHandler) && !staticClass.isUndefined(me._beaconList) && me._beaconList !== null) {
 				me._isListening = true;
-				//me._timerHandle = setInterval();
+
 				me._timerHandle = staticClass.later(me.getConfig('pollInterval'), me, me.check, null, true);
 			}
 		}
@@ -151,8 +152,7 @@ var BeaconListener = function () {
 	}, {
 		key: 'inViewportRegion',
 		value: function inViewportRegion(node, fullyInside, altRegion) {
-			//console.log(node, fullyInside, altRegion, BeaconListener.viewportRegion(node));
-			return this.inRegion(node, BeaconListener.viewportRegion(node), fullyInside, altRegion);
+			return this.inRegion(node, BeaconListener.viewportRegion(), fullyInside, altRegion);
 		}
 
 		/**
@@ -224,17 +224,16 @@ var BeaconListener = function () {
 
 				inRegion = testMethod.apply(me, args);
 
-				if (inRegion && !me._beaconStates[index]) {
+				if (inRegion && me._beaconStates[index] !== true) {
 					//if we encounter a beacon and it wasn't previously in the region
 					me._beaconStates[index] = true;
-					//me.fire(EVENT_TYPE_FOUND, {listener: me, beacon: node});
-					staticClass.fireEvent(EVENT_TYPE_BEACON_FOUND, { listener: me, beacon: node });
-				} else if (!inRegion && me._beaconStates[index]) {
+
+					me.fireEvent(EVENT_TYPE_BEACON_FOUND, { listener: me, beacon: node }, me);
+				} else if (!inRegion && me._beaconStates[index] === true) {
 					//if we encounter a beacon and it was in the region
 					me._beaconStates[index] = false;
 
-					//me.fire(EVENT_TYPE_LOST, {listener: me, beacon: node});
-					staticClass.fireEvent(EVENT_TYPE_BEACON_LOST, { listener: me, beacon: node });
+					me.fireEvent(EVENT_TYPE_BEACON_LOST, { listener: me, beacon: node }, me);
 				}
 			});
 		}
@@ -244,6 +243,60 @@ var BeaconListener = function () {
    * @param type
    * @param data
    * @param dispatcher
+   */
+
+	}, {
+		key: 'fireEvent',
+		value: function fireEvent(type, data, dispatcher) {
+			dispatcher = dispatcher || document;
+			var event = new CustomEvent(type, { detail: data, target: this });
+			dispatcher.dispatchEvent(event);
+		}
+	}, {
+		key: 'addEventListener',
+		value: function addEventListener(type, callback) {
+			if (!(type in this.listeners)) {
+				this.listeners[type] = [];
+			}
+			this.listeners[type].push(callback);
+		}
+	}, {
+		key: 'removeEventListener',
+		value: function removeEventListener(type, callback) {
+			if (!(type in this.listeners)) {
+				return;
+			}
+			var stack = this.listeners[type];
+			for (var i = 0, l = stack.length; i < l; i++) {
+				if (stack[i] === callback) {
+					stack.splice(i, 1);
+					return this.removeEventListener(type, callback);
+				}
+			}
+		}
+	}, {
+		key: 'dispatchEvent',
+		value: function dispatchEvent(event) {
+			if (!(event.type in this.listeners)) {
+				return;
+			}
+			var stack = this.listeners[event.type];
+			//event.target = this;
+			for (var i = 0, l = stack.length; i < l; i++) {
+				stack[i].call(this, event);
+			}
+			document.dispatchEvent(event);
+		}
+
+		/**
+   * a clone of YUI3 Y.later
+   *
+   * @param when
+   * @param obj
+   * @param fn
+   * @param data
+   * @param periodic
+   * @returns {{id: number, interval: *, cancel: cancel}}
    */
 
 	}, {
@@ -296,11 +349,10 @@ var BeaconListener = function () {
 	}, {
 		key: '_handleRegionChange',
 		value: function _handleRegionChange() {
-			console.log('_handleRegionChange');
 			var me = this,
 			    region = me.getConfig('region');
-			window.requestAnimationFrame(function () {
 
+			window.requestAnimationFrame(function () {
 				me.recalcRegion(region);
 			});
 		}
@@ -317,9 +369,9 @@ var BeaconListener = function () {
 			    staticClass = BeaconListener,
 			    beacons = me.getConfig('beacons');
 
-			me._beaconStates = [];
 			me._beaconDOMNodes = [];
 			me._beaconList = staticClass._getList(beacons);
+			me._beaconStates = [].fill(false, me._beaconList.length);
 
 			if (me._beaconList && me._beaconList.length > 0) {
 				[].forEach.call(me._beaconList, function (node, index) {
@@ -357,23 +409,22 @@ var BeaconListener = function () {
 				region = me._region;
 			}
 
-			if (staticClass.isObject(region)) {
-				if (staticClass.isNumber(region[TOP]) && staticClass.isNumber(region[RIGHT]) && staticClass.isNumber(region[BOTTOM]) && staticClass.isNumber(region[LEFT])) {
-					me._region = region;
-					return;
-				} else {
-					region = document.querySelector(region);
+			if (staticClass.isObject(region) && staticClass.isNumber(region[TOP]) && staticClass.isNumber(region[RIGHT]) && staticClass.isNumber(region[BOTTOM]) && staticClass.isNumber(region[LEFT])) {
+				me._region = region;
+				return;
+			} else {
+				region = document.querySelector(region);
 
-					if (region) {
-						newRegion = staticClass.getNodeRegion(region);
+				if (region) {
+					newRegion = staticClass.getNodeRegion(region);
 
-						if (newRegion) {
-							me._region = newRegion;
-							return;
-						}
+					if (newRegion) {
+						me._region = newRegion;
+						return;
 					}
 				}
 			}
+
 			//default to the viewport
 			me._region = null;
 		}
@@ -395,25 +446,6 @@ var BeaconListener = function () {
 			result[LEFT] = Math.max(r1[LEFT], r2[LEFT]);
 			return result;
 		}
-	}, {
-		key: 'fireEvent',
-		value: function fireEvent(type, data, dispatcher) {
-			dispatcher = dispatcher || document;
-			var event = new CustomEvent(type, { detail: data });
-			dispatcher.dispatchEvent(event);
-		}
-
-		/**
-   * a clone of YUI3 Y.later
-   *
-   * @param when
-   * @param obj
-   * @param fn
-   * @param data
-   * @param periodic
-   * @returns {{id: number, interval: *, cancel: cancel}}
-   */
-
 	}, {
 		key: 'later',
 		value: function later(when, obj, fn, data, periodic) {
@@ -510,6 +542,18 @@ var BeaconListener = function () {
 		key: 'isFunction',
 		value: function isFunction(o) {
 			return typeof o === 'function';
+		}
+
+		/**
+   *
+   * @param value
+   * @returns {boolean}
+   */
+
+	}, {
+		key: 'isNumber',
+		value: function isNumber(value) {
+			return typeof value === 'number' && isFinite(value);
 		}
 
 		/**

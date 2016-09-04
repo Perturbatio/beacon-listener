@@ -36,7 +36,7 @@ class BeaconListener {
 		me._beaconStates = [];
 		me._beaconDOMNodes = [];
 		me._fullyInside = false;
-		me._events = [];
+		me.listeners = [];
 
 
 		beacons = config.beacons;
@@ -94,6 +94,7 @@ class BeaconListener {
 
 		window.addEventListener('scroll', () => me._handleRegionChange);
 		window.addEventListener('resize', () => me._handleRegionChange);
+		me.check();
 	}
 
 	/**
@@ -124,7 +125,7 @@ class BeaconListener {
 			&& me._beaconList !== null
 		) {
 			me._isListening = true;
-			//me._timerHandle = setInterval();
+			
 			me._timerHandle = staticClass.later(
 				me.getConfig('pollInterval'),
 				me,
@@ -143,8 +144,7 @@ class BeaconListener {
 	 * @returns {Boolean}
 	 */
 	inViewportRegion( node, fullyInside, altRegion ) {
-		//console.log(node, fullyInside, altRegion, BeaconListener.viewportRegion(node));
-		return this.inRegion(node, BeaconListener.viewportRegion(node), fullyInside, altRegion)
+		return this.inRegion(node, BeaconListener.viewportRegion(), fullyInside, altRegion)
 	}
 
 	/**
@@ -222,18 +222,17 @@ class BeaconListener {
 
 			inRegion = testMethod.apply(me, args);
 
-			if ( inRegion && !me._beaconStates[index] ) {
+			if ( inRegion && me._beaconStates[index] !== true ) {
 				//if we encounter a beacon and it wasn't previously in the region
 				me._beaconStates[index] = true;
-				//me.fire(EVENT_TYPE_FOUND, {listener: me, beacon: node});
-				staticClass.fireEvent(EVENT_TYPE_BEACON_FOUND, {listener: me, beacon: node});
 
-			} else if ( !inRegion && me._beaconStates[index] ) {
+				me.fireEvent(EVENT_TYPE_BEACON_FOUND, {listener: me, beacon: node}, me);
+
+			} else if ( !inRegion && me._beaconStates[index] === true ) {
 				//if we encounter a beacon and it was in the region
 				me._beaconStates[index] = false;
 
-				//me.fire(EVENT_TYPE_LOST, {listener: me, beacon: node});
-				staticClass.fireEvent(EVENT_TYPE_BEACON_LOST, {listener: me, beacon: node});
+				me.fireEvent(EVENT_TYPE_BEACON_LOST, {listener: me, beacon: node}, me);
 			}
 		});
 	}
@@ -244,10 +243,42 @@ class BeaconListener {
 	 * @param data
 	 * @param dispatcher
 	 */
-	static fireEvent( type, data, dispatcher ) {
+	fireEvent( type, data, dispatcher ) {
 		dispatcher = dispatcher || document;
-		var event = new CustomEvent(type, {detail: data});
+		var event = new CustomEvent(type, {detail: data, target: this});
 		dispatcher.dispatchEvent(event);
+	}
+
+	addEventListener ( type, callback ) {
+		if ( !(type in this.listeners) ) {
+			this.listeners[type] = [];
+		}
+		this.listeners[type].push(callback);
+	}
+
+	removeEventListener ( type, callback ) {
+		if ( !(type in this.listeners) ) {
+			return;
+		}
+		var stack = this.listeners[type];
+		for ( var i = 0, l = stack.length; i < l; i++ ) {
+			if ( stack[i] === callback ) {
+				stack.splice(i, 1);
+				return this.removeEventListener(type, callback);
+			}
+		}
+	}
+
+	dispatchEvent( event ) {
+		if ( !(event.type in this.listeners) ) {
+			return;
+		}
+		var stack = this.listeners[event.type];
+		//event.target = this;
+		for ( var i = 0, l = stack.length; i < l; i++ ) {
+			stack[i].call(this, event);
+		}
+		document.dispatchEvent(event);
 	}
 
 	/**
@@ -355,6 +386,15 @@ class BeaconListener {
 
 	/**
 	 *
+	 * @param value
+	 * @returns {boolean}
+	 */
+	static isNumber( value ) {
+		return typeof value === 'number' && isFinite(value);
+	}
+
+	/**
+	 *
 	 * @param node
 	 * @returns {boolean}
 	 */
@@ -410,11 +450,10 @@ class BeaconListener {
 	 * @method _handleRegionChange
 	 *****************/
 	_handleRegionChange() {
-		console.log('_handleRegionChange');
 		var me = this,
 			region = me.getConfig('region');
-		window.requestAnimationFrame(function () {
 
+		window.requestAnimationFrame(function () {
 			me.recalcRegion(region);
 		});
 	}
@@ -428,9 +467,9 @@ class BeaconListener {
 			staticClass = BeaconListener,
 			beacons = me.getConfig('beacons');
 
-		me._beaconStates = [];
 		me._beaconDOMNodes = [];
 		me._beaconList = staticClass._getList(beacons);
+		me._beaconStates = [].fill(false, me._beaconList.length);
 
 		if ( me._beaconList && me._beaconList.length > 0 ) {
 			[].forEach.call(me._beaconList, function ( node, index ) {
@@ -469,28 +508,27 @@ class BeaconListener {
 			region = me._region;
 		}
 
-		if ( staticClass.isObject(region) ) {
-			if (
+		if ( staticClass.isObject(region) && (
 				staticClass.isNumber(region[TOP])
 				&& staticClass.isNumber(region[RIGHT])
 				&& staticClass.isNumber(region[BOTTOM])
 				&& staticClass.isNumber(region[LEFT])
-			) {
-				me._region = region;
-				return;
-			} else {
-				region = document.querySelector(region);
+			) ) {
+			me._region = region;
+			return;
+		} else {
+			region = document.querySelector(region);
 
-				if ( region ) {
-					newRegion = staticClass.getNodeRegion(region);
+			if ( region ) {
+				newRegion = staticClass.getNodeRegion(region);
 
-					if ( newRegion ) {
-						me._region = newRegion;
-						return;
-					}
+				if ( newRegion ) {
+					me._region = newRegion;
+					return;
 				}
 			}
 		}
+
 		//default to the viewport
 		me._region = null;
 	}
