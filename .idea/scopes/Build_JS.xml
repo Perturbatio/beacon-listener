@@ -1,0 +1,3 @@
+<component name="DependencyValidationManager">
+  <scope name="Build JS" pattern="file:build/*.js&amp;&amp;!file:build/*.min.js" />
+</component>
