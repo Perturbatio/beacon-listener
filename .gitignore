@@ -5,3 +5,6 @@ nbproject/*
 .svn
 .svn/*
 .idea
+!.idea/watcherTasks.xml
+!.idea/scopes/Build_JS.xml
+!.idea/scopes/Src_JS.xml
