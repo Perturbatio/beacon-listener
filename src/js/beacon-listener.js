@@ -13,6 +13,15 @@ class BeaconListener {
 		return me._events;
 	}
 
+	get beacons(){
+		return me.getConfig('beacons');
+	}
+
+	set beacons(beacons){
+		me._config.beacons = beacons;
+		me._handleBeaconsChange();
+	}
+
 	constructor( config ) {
 
 		var me = this,
@@ -68,6 +77,8 @@ class BeaconListener {
 			);
 		}
 
+		window.addEventListener('scroll', () => me.check);
+		window.addEventListener('resize', () => me.check);
 		window.addEventListener('scroll', () => me._handleRegionChange);
 		window.addEventListener('resize', () => me._handleRegionChange);
 	}
@@ -175,7 +186,6 @@ class BeaconListener {
 	check() {
 		var me = this,
 			region = me._region,
-			staticClass = BeaconListener,
 			testMethod;
 
 		if ( region === null ) {

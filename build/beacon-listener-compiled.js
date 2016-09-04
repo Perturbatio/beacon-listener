@@ -16,6 +16,15 @@ var BeaconListener = function () {
 		get: function get() {
 			return me._events;
 		}
+	}, {
+		key: 'beacons',
+		get: function get() {
+			return me.getConfig('beacons');
+		},
+		set: function set(beacons) {
+			me._config.beacons = beacons;
+			me._handleBeaconsChange();
+		}
 	}]);
 
 	function BeaconListener(config) {
@@ -68,6 +77,12 @@ var BeaconListener = function () {
 			staticClass.later(me.getConfig('pollInterval'), me, me.check, null, false);
 		}
 
+		window.addEventListener('scroll', function () {
+			return me.check;
+		});
+		window.addEventListener('resize', function () {
+			return me.check;
+		});
 		window.addEventListener('scroll', function () {
 			return me._handleRegionChange;
 		});
@@ -171,7 +186,6 @@ var BeaconListener = function () {
 		value: function check() {
 			var me = this,
 			    region = me._region,
-			    staticClass = BeaconListener,
 			    testMethod;
 
 			if (region === null) {
