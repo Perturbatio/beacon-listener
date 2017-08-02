@@ -1,7 +1,7 @@
 beacon-listener
 ===============
 
-Beacon Listener - Create one or more listeners to watch for nodes with specified selectors to enter either the viewport or a specified region
+Beacon Listener - Create listeners to detect when nodes with the specified selector(s) enter either the viewport or a specified region
 
 Basic usage:
 ```javascript
